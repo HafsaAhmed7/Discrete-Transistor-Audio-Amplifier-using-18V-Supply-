@@ -1,7 +1,105 @@
-Discrete Transistor Audio Amplifier ($\pm18\text{V}$ Supply)A fully discrete, multi-stage audio power amplifier designed, simulated, and physically implemented from scratch without the use of integrated circuits (such as operational amplifiers or dedicated audio ICs). The system processes a low-level millivolt signal from a condenser microphone and amplifies it to drive an $8\ \Omega$ loudspeaker with minimal distortion and high thermal stability.Core Performance SpecificationsVoltage Gain ($A_v$): $\ge 500\text{ V/V}$ ($\sim 54\text{ dB}$) | Validated: $\sim 510\text{ V/V}$Frequency Response: $100\text{ Hz}$ to $12\text{ kHz}$ (@ $-3\text{ dB}$) | Validated: Fully metOutput Power ($P_o$): $1.0$ to $3.0\text{ Watts}$ into $8\ \Omega$ load | Validated: $\sim 1.5\text{ W}$ clear signalInput Impedance ($R_{in}$): $\ge 100\text{ k}\Omega$ | Validated: $\sim 110\text{ k}\Omega$Output Voltage Swing: $\pm 4\text{V}$ Peak UndistortedPower Supply: $\pm18\text{V}$ Dual Supply (Power Stage) & $+18\text{V}$ Single Supply (Pre-amp)System Architecture & Circuit StagesThe amplifier architecture distributes gain, input buffering, and current driving across distinct stages using readily available discrete BJTs (2N3904, TIP41C, TIP42C):Plaintext[ Condenser Mic ] ──> [ Input Buffer ] ──> [ Gain Stage I ] ──> [ Gain Stage II ] ──> [ Class AB Output ] ──> [ 8Ω Speaker ]
-                         (CC Stage)          (CE Degenerated)       (High-Gain CE)        (Push-Pull Stage)
-1. Input Coupling & BiasingAn AC-coupling network isolates DC microphone bias currents while acting as a high-pass filter. The pole is positioned strategically to ensure the system's lower cutoff frequency stays safely below $100\text{ Hz}$.2. Buffer Stage (Common Collector / Emitter Follower)Transistor: 2N3904Purpose: Provides a high input impedance ($\ge 100\text{ k}\Omega$) to prevent loading down the high-impedance condenser microphone source, preserving signal integrity right at the input boundary.3. Voltage Amplification Stages (Cascaded Common Emitter)Stage I (CE with Emitter Degeneration): Yields a stable, predictable voltage gain ($\sim 26\text{ V/V}$). Emitter degeneration increases local feedback, linearizes the transistor characteristics, and widens the stage bandwidth.Stage II (High-Gain CE): Provides the massive voltage swing push ($\sim 25\text{ V/V}$) required to bridge the pre-amplifier output to the power stage, achieving the global $500\text{ V/V}$ benchmark.4. Power Output Stage (Class AB Complementary Push-Pull)Transistors: TIP41C (NPN) & TIP42C (PNP) power pairs.Purpose: Delivers the heavy current required to drive the low-impedance $8\ \Omega$ load.Design Considerations: Symmetrical rail swings around ground remove the need for bulky, distorting DC-blocking output capacitors. Diode-biasing stringently fixes conduction angles to eliminate crossover distortion, while low-value balancing emitter resistors ($0.22\ \Omega$) provide negative feedback to prevent thermal runaway.Repository OrganizationPlaintext├── Simulation/          # SPICE models, .asc schematics, and transient/AC analysis plots
-├── Hardware/            # PCB Gerber files, schematic diagrams, and physical hardware photos
-├── Documentation/       # Comprehensive technical engineering report & mathematical calculations
-└── README.md            # Repository documentation
-/Simulation — Contains schematic captures, transient response checks, and Bode plots performed in SPICE (LTspice)./Hardware — Circuit schematics, Bill of Materials (BOM), PCB layouts, and photographs of the physical board testing./Documentation — Final technical engineering report outlining exact analytical small-signal calculations ($r_\pi$, $r_e$, input/output impedances) and empirical lab validation parameters.Simulation & ValidationValidation was executed across three standardized baseline testing metrics to ensure strict engineering compliance:A. Voltage Gain ($A_v$) TestMethod: Evaluated using a $1\text{ kHz}$ input sinusoid at $8\text{ mV}$ peak.Result: Achieved a stable, clean output voltage swing of $\approx \pm4\text{V}$ peak across the load without clipping, verifying an operational voltage gain exceeding $500\text{ V/V}$.B. Frequency Response TestMethod: Mapped using a $100\text{ Hz}$ square wave transient response test alongside an AC sweep.Result: The system exhibited stable midband gain response with clean roll-off corner boundaries at $100\text{ Hz}$ and $12\text{ kHz}$ at the $-3\text{ dB}$ threshold.C. Maximum Output Power ($P_{o(max)}$)Method: Measured at the critical threshold right before sinusoidal output waveform clipping occurs.Result: Safely delivers $\sim 1.5\text{ W}$ continuous AC power directly to the $8\ \Omega$ load, fulfilling the power requirements under nominal operational temperatures.
+# Discrete Transistor Audio Amplifier (±18V Supply)
+
+A fully discrete multi-stage audio power amplifier designed, simulated, and implemented without the use of integrated circuits. The system amplifies a low-level microphone signal to drive an 8Ω loudspeaker with high gain, low distortion, and stable thermal performance.
+
+---
+
+## Project Overview
+
+This project demonstrates the design of a complete analog audio amplification system using discrete BJTs. It focuses on signal conditioning, voltage amplification, and power delivery using a Class-AB output stage.
+
+The design is validated through analytical calculations, SPICE simulation (LTspice), and hardware implementation.
+
+---
+
+## Specifications
+
+- Voltage Gain (Av): ≥ 500 V/V (~54 dB)
+- Verified Gain: ~510 V/V
+- Frequency Response: 100 Hz – 12 kHz (-3 dB)
+- Output Power: ~1.5 W (continuous)
+- Load: 8Ω speaker
+- Input Impedance: ≥ 100 kΩ (~110 kΩ achieved)
+- Supply: ±18V (power stage), +18V (preamp stages)
+
+---
+
+## System Architecture
+
+Microphone → Input Buffer → Gain Stage I → Gain Stage II → Gain Stage III → Class-AB Output Stage → 8Ω Speaker
+
+---
+
+## Circuit Design
+
+### Input Stage
+- AC coupling for DC isolation
+- High-pass filtering for low-frequency control
+- Stable biasing for microphone input
+
+### Buffer Stage
+- Transistor: 2N3904
+- Common collector configuration (emitter follower)
+- High input impedance (~100 kΩ)
+- Prevents loading of microphone source
+
+### Voltage Gain Stages
+
+Stage I (CE with emitter degeneration):
+- Gain: ~26 V/V
+- Improved linearity and stability
+
+Stage II (CE amplifier):
+- Gain: ~25 V/V
+- Provides main voltage amplification
+
+### Power Output Stage (Class AB Push-Pull)
+- Transistors: TIP41C (NPN), TIP42C (PNP)
+- High current drive for 8Ω load
+- Reduced crossover distortion
+- 0.22Ω emitter resistors for thermal stability
+
+---
+
+## Simulation & Validation
+
+### Gain Test
+- Input: 1 kHz sine wave (8 mV peak)
+- Output: Clean ±4 V waveform
+- Verified gain > 500 V/V
+
+### Frequency Response
+- Bandwidth: 100 Hz – 12 kHz
+- Stable -3 dB roll-off behavior
+
+### Output Power Test
+- Maximum undistorted output: ~1.5 W
+- Load: 8Ω speaker
+
+---
+
+## Tools & Technologies
+
+- LTspice
+- Discrete BJT Design (2N3904, TIP41C, TIP42C)
+- Analog Circuit Design
+- Small-Signal Modeling
+- Hardware Testing
+
+---
+
+## Key Features
+
+- Fully discrete analog audio amplifier
+- Multi-stage gain architecture
+- Class-AB efficient output stage
+- Strong agreement between theory, simulation, and hardware results
+- Thermal stability and low distortion design
+
+---
+
+## Applications
+
+- Audio amplifier design
+- Analog electronics learning project
+- ECD coursework project
